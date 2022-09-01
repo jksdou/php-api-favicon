@@ -1,29 +1,13 @@
 <?php
+
 /**
  * 获取网站Favicon服务接口
  *
- * @author    Jerry Bendy / 一为
- * @date      2014-09-10
- * @link      https://www.iowen.cn
- * @version   2.1.0
+ * @author    Jackson Dou
+ * @date      2022-09-01
+ * @link      http://favicon.uiisc.com
+ * @version   1.1.0
  */
-
-namespace Jerrybendy\Favicon;
-
-
-/**
- * Favicon 获取类
- *
- * ## 关于缓存:
- * 本来类库中是调用Redis来做缓存，后来想了下，还是让这个类只专注于自己的业
- * 务吧（获取图标）缓存这些操作交给外部来处理
- *
- * @author Jerry Bendy
- *
- * @link   http://blog.icewingcc.com
- *
- */
-
 class Favicon
 {
 
@@ -35,7 +19,6 @@ class Favicon
      * @var bool
      */
     public $debug_mode = false;
-
 
     /**
      * 保存传入的参数,其中:
@@ -154,7 +137,6 @@ class Favicon
 
         if ($return) {
             return $data;
-
         } else {
 
             if ($data !== FALSE) {
@@ -164,7 +146,6 @@ class Favicon
                 }
 
                 echo $data;
-
             } else {
                 header('Content-type: application/json');
                 echo json_encode(array('status' => -1, 'msg' => 'Unknown Error'));
@@ -187,7 +168,7 @@ class Favicon
         return array(
             'X-Robots-Tag: noindex, nofollow',
             'Content-type: image/x-icon',
-          	'Cache-Control: public, max-age=604800'
+            'Cache-Control: public, max-age=604800'
         );
     }
 
@@ -228,7 +209,7 @@ class Favicon
      * @return bool|string
      */
     protected function getData()
-    { 
+    {
         // 尝试匹配映射
         $this->data = $this->_match_file_map();
 
@@ -263,7 +244,7 @@ class Favicon
                         //解析HTML中的相对URL 路径
                         $match_url[2] = $this->filterRelativeUrl(trim($match_url[2]), $this->params['origin_url']);
 
-                        $icon = $this->getFile($match_url[2],true);
+                        $icon = $this->getFile($match_url[2], true);
 
                         if ($icon && $icon['status'] == 'OK') {
 
@@ -285,28 +266,26 @@ class Favicon
 
         //未能从LINK标签中获取图标（可能是网址无法打开，或者指定的文件无法打开，或未定义图标地址）
         //将使用网站根目录的文件代替
-        $data = $this->getFile($this->full_host . '/favicon.ico',true);
+        $data = $this->getFile($this->full_host . '/favicon.ico', true);
 
         if ($data && $data['status'] == 'OK') {
             $this->_log_message("Success get icon from website root: {$this->full_host}/favicon.ico");
             $this->data = $data['data'];
-
         } else {
             //如果直接取根目录文件返回了301或404，先读取重定向，再从重定向的网址获取
             $ret = $this->formatUrl($redirected_url);
 
             if ($ret) {
                 //最后的尝试，从重定向后的网址根目录获取favicon文件
-                $data = $this->getFile($this->full_host . '/favicon.ico',true);
+                $data = $this->getFile($this->full_host . '/favicon.ico', true);
 
                 if ($data && $data['status'] == 'OK') {
                     $this->_log_message("Success get icon from redirect file: {$this->full_host}/favicon.ico");
                     $this->data = $data['data'];
                 }
-
             }
         }
-        
+
         /**
          * 从其他api最后获取图像 -----------------------------------------------------
          * 
@@ -320,7 +299,7 @@ class Favicon
         //        $this->data = $icon; 
         //    } 
         //}
-        
+
 
         if ($this->data == NULL) {
             //各个方法都试过了，还是获取不到。。。
@@ -487,16 +466,16 @@ class Favicon
         //执行重定向获取
         $ret = $this->curlExecFollow($ch, 2);
 
-        if($isimg){
-            $mime=curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-            $mimeArray=explode('/',$mime);
+        if ($isimg) {
+            $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            $mimeArray = explode('/', $mime);
         }
         $arr = array(
             'status'   => 'FAIL',
             'data'     => '',
             'real_url' => ''
         );
-        if(!$isimg ||  $mimeArray[0] == 'image'){
+        if (!$isimg ||  $mimeArray[0] == 'image') {
             if ($ret != false) {
                 $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
@@ -505,12 +484,11 @@ class Favicon
                     'data'     => $ret,
                     'real_url' => curl_getinfo($ch, CURLINFO_EFFECTIVE_URL)
                 );
-
             }
             curl_close($ch);
 
             return $arr;
-        }else{
+        } else {
             $this->_log_message("不是图片：{$url}");
             return $arr;
         }
@@ -526,33 +504,34 @@ class Favicon
      * @param int      $maxredirect 最大允许的重定向次数
      * @return string
      */
-    private function curlExecFollow( &$ch, $maxredirect = null) { 
-        $mr = $maxredirect === null ? 5 : intval($maxredirect); 
-        if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) { 
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $mr > 0); 
-            curl_setopt($ch, CURLOPT_MAXREDIRS, $mr); 
-        } else { 
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); 
-            if ($mr > 0) { 
-                $newurl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL); 
-    
-                $rch = curl_copy_handle($ch); 
-                curl_setopt($rch, CURLOPT_HEADER, true); 
-                curl_setopt($rch, CURLOPT_NOBODY, true); 
+    private function curlExecFollow(&$ch, $maxredirect = null)
+    {
+        $mr = $maxredirect === null ? 5 : intval($maxredirect);
+        if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $mr > 0);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, $mr);
+        } else {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            if ($mr > 0) {
+                $newurl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
+                $rch = curl_copy_handle($ch);
+                curl_setopt($rch, CURLOPT_HEADER, true);
+                curl_setopt($rch, CURLOPT_NOBODY, true);
                 curl_setopt($rch, CURLOPT_NOSIGNAL, 1);
-                curl_setopt($rch, CURLOPT_CONNECTTIMEOUT_MS, 800); 
-                curl_setopt($rch, CURLOPT_FORBID_REUSE, false); 
-                curl_setopt($rch, CURLOPT_RETURNTRANSFER, true); 
-                do { 
-                    curl_setopt($rch, CURLOPT_URL, $newurl); 
-                    $header = curl_exec($rch); 
-                    if (curl_errno($rch)) { 
-                        $code = 0; 
-                    } else { 
-                        $code = curl_getinfo($rch, CURLINFO_HTTP_CODE); 
-                        if ($code == 301 || $code == 302) { 
-                            preg_match('/Location:(.*?)\n/', $header, $matches); 
-                            $newurl = trim(array_pop($matches)); 
+                curl_setopt($rch, CURLOPT_CONNECTTIMEOUT_MS, 800);
+                curl_setopt($rch, CURLOPT_FORBID_REUSE, false);
+                curl_setopt($rch, CURLOPT_RETURNTRANSFER, true);
+                do {
+                    curl_setopt($rch, CURLOPT_URL, $newurl);
+                    $header = curl_exec($rch);
+                    if (curl_errno($rch)) {
+                        $code = 0;
+                    } else {
+                        $code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
+                        if ($code == 301 || $code == 302) {
+                            preg_match('/Location:(.*?)\n/', $header, $matches);
+                            $newurl = trim(array_pop($matches));
                             /**
                              * 这里由于部分网站返回的 Location 的值可能是相对网址, 所以还需要做一步
                              * 转换成完整地址的操作
@@ -560,25 +539,25 @@ class Favicon
                              * @since v2.2.2
                              */
                             $newurl = $this->filterRelativeUrl($newurl, $this->params['origin_url']);
-                        } else { 
-                            $code = 0; 
-                        } 
-                    } 
-                } while ($code && --$mr); 
-                curl_close($rch); 
-                if (!$mr) { 
-                    if ($maxredirect === null) { 
-                        trigger_error('Too many redirects. When following redirects, libcurl hit the maximum amount.', E_USER_WARNING); 
-                    } else { 
-                        $maxredirect = 0; 
-                    } 
-                    return false; 
-                } 
-                curl_setopt($ch, CURLOPT_URL, $newurl); 
-            } 
-        } 
-        return curl_exec($ch); 
-    } 
+                        } else {
+                            $code = 0;
+                        }
+                    }
+                } while ($code && --$mr);
+                curl_close($rch);
+                if (!$mr) {
+                    if ($maxredirect === null) {
+                        trigger_error('Too many redirects. When following redirects, libcurl hit the maximum amount.', E_USER_WARNING);
+                    } else {
+                        $maxredirect = 0;
+                    }
+                    return false;
+                }
+                curl_setopt($ch, CURLOPT_URL, $newurl);
+            }
+        }
+        return curl_exec($ch);
+    }
 
     /**
      * 在设定的映射条件中循环并尝试匹配每一条规则，
@@ -606,9 +585,7 @@ class Favicon
     private function _log_message($message)
     {
         if ($this->debug_mode) {
-            error_log(date('d/m/Y H:i:s : ').$message.PHP_EOL,3, "./my-errors.log");
+            error_log(date('d/m/Y H:i:s : ') . $message . PHP_EOL, 3, "./my-errors.log");
         }
     }
-
 }
-
