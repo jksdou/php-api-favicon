@@ -36,4 +36,4 @@ RewriteRule ^favicon/(.*)\.png$ favicon/get.php?url=$1 [L]
 
 ### 感谢
 
-php-get-favicon 演变自 <a href="https://github.com/owen0o0/getFavicon" target="_blank">owen0o0/getFavicon</a>
+本项目衍生自 <a href="https://github.com/owen0o0/getFavicon" target="_blank">owen0o0/getFavicon</a>
