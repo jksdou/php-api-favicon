@@ -4,7 +4,11 @@
 
 ### 演示
 
-演示地址：<a href="http://favicon.uiisc.com/get.php?url=uiisc.com" target="_blank">http://favicon.uiisc.com/get.php?url=uiisc.com</a>
+演示地址：
+
+<a href="http://favicon.uiisc.ml/get.php?url=uiisc.com" target="_blank">http://favicon.uiisc.ml/get.php?url=uiisc.com</a>
+
+<a href="http://favicon.uiisc.ml/favicon/uiisc.com.png" target="_blank">http://favicon.uiisc.ml/favicon/uiisc.com.png</a>
 
 ### 安装使用
 

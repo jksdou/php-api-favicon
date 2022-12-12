@@ -4,8 +4,7 @@
  * getFavicon
  * @author    Jackson Dou
  * @date      2022-09-01
- * @link      http://favicon.uiisc.com
- * @version   1.1.0
+ * @version   1.1.1
  */
 
 if (!isset($_GET['url'])) {

@@ -1,3 +1,5 @@
 RewriteEngine On
 RewriteBase /
-RewriteRule ^/favicon/(.*)\.png$ favicon.php?url=$1 [L,NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^favicon/(.*)\.png$ get.php?url=$1 [L,NC]
