@@ -39,8 +39,8 @@ $url = $_GET['url'];
  * 格式化 URL, 并尝试读取缓存
  */
 $formatUrl = $favicon->formatUrl($url);
-if($formatUrl){
-    if($expire == 0){
+if ($formatUrl) {
+    if ($expire == 0) {
         $favicon->getFavicon($formatUrl, false);
         exit;
     } else {
@@ -50,8 +50,8 @@ if($formatUrl){
          * 2023-02-20
          * 增加刷新缓存参数：refresh=true 如：https://域名?url=www.iowen.cn&refresh=true
          */
-        if( !isset($_GET['refresh']) || ( isset($_GET['refresh']) && $_GET['refresh']!='true' ) ){
-            $data = Cache::get($formatUrl,$defaultMD5,$expire);
+        if (!isset($_GET['refresh']) || (isset($_GET['refresh']) && $_GET['refresh'] != 'true')) {
+            $data = Cache::get($formatUrl, $defaultMD5, $expire);
             if ($data !== NULL) {
                 foreach ($favicon->getHeader() as $header) {
                     @header($header);
@@ -66,20 +66,12 @@ if($formatUrl){
          */
         $content = $favicon->getFavicon($formatUrl, TRUE);
 
-        if( md5($content) == $defaultMD5 ){
+        if (md5($content) == $defaultMD5) {
             $expire = 43200; //如果返回默认图标，设置过期时间为12小时。Cache::get 方法中需同时修改
         }
 
         Cache::set($formatUrl, $content, $expire);
 
-if ($expire == 0) {
-    $favicon->getFavicon($formatUrl, false);
-    exit;
-} else {
-    $defaultMD5 = md5(file_get_contents($defaultIco));
-
-    $data = Cache::get($formatUrl, $defaultMD5, $expire);
-    if ($data !== NULL) {
         foreach ($favicon->getHeader() as $header) {
             @header($header);
         }
@@ -87,24 +79,8 @@ if ($expire == 0) {
         echo $content;
         exit;
     }
-
-    /**
-     * 缓存中没有指定的内容时, 重新获取内容并缓存起来
-     */
-    $content = $favicon->getFavicon($formatUrl, TRUE);
-
-    if (md5($content) == $defaultMD5) {
-        $expire = 43200; //如果返回默认图标，设置过期时间为12小时。Cache::get 方法中需同时修改
-    }
-
-    Cache::set($formatUrl, $content, $expire);
-
-    foreach ($favicon->getHeader() as $header) {
-        @header($header);
-    }
-
-    echo $content;
-    exit;
+} else {
+    return http_response_code(404);
 }
 
 /**
@@ -166,7 +142,7 @@ class Cache
         if (!is_file($a) || (time() - filemtime($a)) > $expire) {
             $imgdata = fopen($a, "w") or die("Unable to open file!");  //w  重写  a追加
             fwrite($imgdata, $value);
-            fclose($imgdata); 
+            fclose($imgdata);
             clearstatcache();
         }
     }
