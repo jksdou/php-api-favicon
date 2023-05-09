@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <title>获取网站的 Favicon 图标</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="Author" content="Jackson Dou" />
+    <meta name="Copyright" content="版权所有 &copy; 2022 Jackson Dou" />
+    <meta name="Keywords" content="favicon,网站favicon图标,API" />
+    <meta name="Description" content="PHP在线获取网站的 Favicon 图标 API" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <h1>获取网站Favicon图标API服务</h1>
+    <h3>演示地址</h3>
+    <p><a href="http://favicon.uiisc.com/get.php?url=uiisc.com" target="_blank">http://favicon.uiisc.com/get.php?url=uiisc.com</a></p>
+    <p><a href="http://favicon.uiisc.com/get.php?url=http://uiisc.com" target="_blank">http://favicon.uiisc.com/get.php?url=http://uiisc.com</a></p>
+    <p><a href="http://favicon.uiisc.com/favicon/uiisc.com.png" target="_blank">http://favicon.uiisc.com/favicon/uiisc.com.png</a></p>
+    <h3>安装使用</h3>
+    <ul>
+        <li>上传到网站根目录或者 favicon 文件夹中</li>
+        <li>cache 文件夹赋 755 权限</li>
+        <li>然后访问 http://你的域名网址/favicon/get.php?url=https://www.baidu.com</li>
+        <li>如果出现获取不了的情况建议删除缓存再试一次</li>
+        <li>注：文中 favicon 为 api 文件夹，具体自行设置</li>
+    </ul>
+    <h3>伪静态</h3>
+    <p>方便 CDN 缓存</p>
+    <pre><code class="language-nginx" lang="nginx"># Nginx规则
+rewrite ^/favicon/(.*)\.png$ /get.php?url=$1;
+
+# Apache 规则，文件.htaccess
+RewriteEngine On
+RewriteRule ^favicon/(.*)\.png$ /get.php?url=$1 [L]
+</code></pre>
+    <p>调用方法 http://你的域名网址/favicon/www.baidu.com.png</p>
+    <ul>
+        <li>注：目标网址不能有 http(s)://</li>
+    </ul>
+    <h3>刷新缓存</h3>
+    <p>刷新缓存参数：refresh=true</p>
+    <p>如：http://favicon.uiisc.com/get.php?url=uiisc.com&refresh=true</p>
+    <hr />
+    <footer>
+        <p>源码下载：<a href="https://github.com/jksdou/php-get-favicon" target="_blank">Github</a></p>
+        <p>友情链接：<a href="https://crogram.org" target="_blank" title="程江开源项目中心">CROGRAM</a> &bull; <a href="https://uinote.com" target="_blank">UINOTE</a> &bull; <a href="https://uiisc.org" target="_blank">UIISC</a></p>
+        <p>版权所有 &copy; 2022 <a href="https://github.com/jksdou" target="_blank">Jackson Dou</a> <span>Powered by <a href="https://crogram.com/" target="_blank" title="程江科技">CROGRAM</a></span></p>
+    </footer>
+</body>
+</html>
