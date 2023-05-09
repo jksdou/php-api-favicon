@@ -6,9 +6,9 @@
 
 演示地址：
 
-<a href="http://favicon.uiisc.ml/get.php?url=uiisc.com" target="_blank">http://favicon.uiisc.ml/get.php?url=uiisc.com</a>
+<a href="http://favicon.uiisc.com/get.php?url=uiisc.com" target="_blank">http://favicon.uiisc.com/get.php?url=uiisc.com</a>
 
-<a href="http://favicon.uiisc.ml/favicon/uiisc.com.png" target="_blank">http://favicon.uiisc.ml/favicon/uiisc.com.png</a>
+<a href="http://favicon.uiisc.com/favicon/uiisc.com.png" target="_blank">http://favicon.uiisc.com/favicon/uiisc.com.png</a>
 
 ### 安装使用
 
@@ -24,13 +24,13 @@
 
 ```nginx
 # Nginx规则
-rewrite ^/favicon/(.*)\.png$ /favicon/get.php?url=$1;
+rewrite ^/favicon/(.*)\.png$ /get.php?url=$1;
 
 # Apache 规则
 # .htaccess
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteRule ^favicon/(.*)\.png$ favicon/get.php?url=$1 [L]
+RewriteRule ^favicon/(.*)\.png$ /get.php?url=$1 [L]
 </IfModule>
 ```
 
